@@ -3,15 +3,14 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Shawarma El Reem — Working Frontend (Checkout + Address)</title>
-<meta name="description" content="Working prototype: menu, cart, checkout modal with address, WhatsApp checkout, branches scroll, responsive." />
+<title>Shawarma El Reem — Working Frontend (Final)</title>
+<meta name="description" content="Shawarma El Reem — menu, cart, checkout with address, WhatsApp, branches, responsive." />
 <style>
   :root{
     --accent:#f6b21a; --dark:#111; --muted:#666; --maxw:1200px;
   }
   *{box-sizing:border-box}
-  body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;color:var(--dark);background:#fafafa}
-  a{color:inherit}
+  body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;color:var(--dark);background:#fafafa;-webkit-font-smoothing:antialiased}
   .container{max-width:var(--maxw);margin:0 auto;padding:18px}
 
   /* Header / nav */
@@ -20,10 +19,10 @@
   .brand{display:flex;align-items:center;gap:12px}
   .brand img{height:44px;width:44px;border-radius:8px;object-fit:cover}
   nav ul{display:flex;gap:12px;list-style:none;margin:0;padding:0}
-  nav a{padding:8px 10px;border-radius:6px;color:var(--dark);text-decoration:none;font-weight:600}
+  nav a{padding:8px 10px;border-radius:6px;color:var(--dark);text-decoration:none;font-weight:600;cursor:pointer}
   nav a:hover, nav a.active{color:var(--accent)}
-  .burger{display:none;background:transparent;border:0;font-size:20px}
-  .order-cta{background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px 12px;border-radius:10px;font-weight:700}
+  .burger{display:none;background:transparent;border:0;font-size:20px;cursor:pointer}
+  .order-cta{background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px 12px;border-radius:10px;font-weight:700;cursor:pointer}
 
   /* hero */
   .hero{display:flex;gap:20px;align-items:center;padding:28px 0}
@@ -39,7 +38,7 @@
   .menu-controls{display:flex;gap:8px;align-items:center;margin-bottom:12px}
   .category-tabs{display:flex;gap:8px;flex-wrap:nowrap;overflow:auto;padding-bottom:6px}
   .category-tabs::-webkit-scrollbar{height:6px}
-  .category-tabs button{white-space:nowrap}
+  .category-tabs button{white-space:nowrap;cursor:pointer}
   .menu-list{display:grid;gap:10px}
   .menu-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;border:1px solid #f2f2f2}
   .meta{color:var(--muted);font-size:13px}
@@ -67,6 +66,7 @@
   footer{padding:20px 0;color:var(--muted);text-align:center}
   .social a{display:inline-block;margin:0 6px;padding:8px;border-radius:8px;background:#222;color:#fff;text-decoration:none}
 
+  /* small screens */
   @media (max-width:980px){
     main{grid-template-columns:1fr}
     .hero-media{width:100%;height:200px}
@@ -74,14 +74,13 @@
     .burger{display:block}
     .order-cta{padding:8px 10px}
     .modal{max-width:520px}
-    .category-tabs{gap:6px}
   }
 </style>
 </head>
 <body>
 <header>
   <div class="container nav">
-    <div class="brand">
+    <div class="brand" style="align-items:center">
       <img src="assets/images/about-banner.jpg" alt="logo" />
       <div>
         <strong>Shawarma El Reem</strong>
@@ -91,11 +90,11 @@
 
     <nav>
       <ul id="mainNav">
-        <li><a href="#home" data-target="#home" class="nav-link">Home</a></li>
-        <li><a href="#menu-section" data-target="#menu-section" class="nav-link">Menu</a></li>
-        <li><a href="#serving" data-target="#serving" class="nav-link">Serving</a></li>
-        <li><a href="#branches" data-target="#branches" class="nav-link">Branches</a></li>
-        <li><a href="#inquire" data-target="#inquire" class="nav-link">Inquire</a></li>
+        <li><a class="nav-link" data-target="#home">Home</a></li>
+        <li><a class="nav-link" data-target="#menu-section">Menu</a></li>
+        <li><a class="nav-link" data-target="#serving">Serving</a></li>
+        <li><a class="nav-link" data-target="#branches">Branches</a></li>
+        <li><a class="nav-link" data-target="#inquire">Inquire</a></li>
       </ul>
     </nav>
 
@@ -112,7 +111,7 @@
       <div class="hero-copy">
         <h1>Real shawarma, quick service — taste the Reem difference.</h1>
         <p style="color:var(--muted)">Handcrafted rolls, premium spices, and clean street food across our branches. Order from our clustered menu below.</p>
-        <div style="margin-top:12px;display:flex;gap:8px">
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn primary" id="orderInline">Open Menu</button>
           <button class="btn ghost" id="viewBranchesBtn">View Branches</button>
         </div>
@@ -131,9 +130,9 @@
 
       <div class="menu-list" id="menuList"></div>
 
-      <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
+      <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
         <div>Cart: <span id="cartCount">0</span> items — <strong id="cartTotal">EGP 0</strong></div>
-        <div>
+        <div style="display:flex;gap:8px">
           <button class="btn" id="viewCart">View Cart</button>
           <button class="btn primary" id="whatsappCheckout">Checkout via WhatsApp</button>
         </div>
@@ -162,16 +161,19 @@
           <input id="ufName" placeholder="Full name*" required />
           <input id="ufPhone" placeholder="Phone*" required />
         </div>
+
         <div id="franchiseFields" style="display:none;margin-bottom:8px">
           <input id="franchiseLocation" placeholder="Preferred location / city" />
           <input id="franchiseInvestment" placeholder="Investment capacity (EGP)" />
         </div>
+
         <div id="jobFields" style="display:none;margin-bottom:8px">
           <select id="jobPosition">
             <option>Cook</option><option>Rider</option><option>Store Manager</option>
           </select>
           <textarea id="jobCV" placeholder="Paste short CV or message"></textarea>
         </div>
+
         <textarea id="ufMessage" placeholder="Message (optional)" style="min-height:80px"></textarea>
         <div style="margin-top:10px;display:flex;gap:8px">
           <button class="btn primary" type="submit">Submit</button>
@@ -198,11 +200,11 @@
     <div class="panel cart-box" style="margin-top:14px">
       <h3>Your Cart</h3>
       <div id="cartItems" style="min-height:40px"></div>
-      <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center">
+      <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
         <div style="font-weight:700">Total: <span id="cartTotalSide">EGP 0</span></div>
-        <div>
+        <div style="display:flex;gap:8px">
           <button class="btn" id="emptyCart">Empty</button>
-          <button class="btn primary" id="whatsappCheckoutSide">WhatsApp</button>
+          <button class="btn primary" id="checkoutSideBtn">Checkout</button>
         </div>
       </div>
     </div>
@@ -228,8 +230,10 @@
   </div>
 </footer>
 
-<!-- modal -->
-<div class="modal-backdrop" id="modalBackdrop" aria-hidden="true"><div class="modal" id="modalContent"></div></div>
+<!-- modal backdrop -->
+<div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+  <div class="modal" id="modalContent"></div>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', ()=> {
@@ -263,7 +267,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
   const cartTotalSide = document.getElementById('cartTotalSide');
   const viewCartBtn = document.getElementById('viewCart');
   const whatsappBtn = document.getElementById('whatsappCheckout');
-  const whatsappSideBtn = document.getElementById('whatsappCheckoutSide');
+  const whatsappSideBtn = document.getElementById('whatsappCheckoutSide'); // optional earlier id
   const emptyCartBtn = document.getElementById('emptyCart');
   const showMoreBtn = document.getElementById('showMoreBranches');
   const branchesGrid = document.getElementById('branchesGrid');
@@ -273,10 +277,10 @@ document.addEventListener('DOMContentLoaded', ()=> {
   const orderNowBtn = document.getElementById('orderNow');
   const orderInlineBtn = document.getElementById('orderInline');
   const viewBranchesBtn = document.getElementById('viewBranchesBtn');
-  const mainNav = document.getElementById('mainNav');
   const burger = document.getElementById('burger');
+  const checkoutSideBtn = document.getElementById('checkoutSideBtn');
 
-  // Defensive checks
+  // safety checks
   if(!menuList || !categoryTabs){ console.error('Essential DOM nodes missing'); return; }
 
   /* ---------- Cart state ---------- */
@@ -287,8 +291,9 @@ document.addEventListener('DOMContentLoaded', ()=> {
   /* ---------- Categories ---------- */
   const categories = ['All', ...Array.from(new Set(MENU.map(i=>i.cat)))];
   let activeCategory = 'All';
+
   function renderCategoryTabs(){
-    categoryTabs.innerHTML='';
+    categoryTabs.innerHTML = '';
     categories.forEach(cat=>{
       const b = document.createElement('button'); b.className='btn ghost'; b.textContent = cat;
       if(cat===activeCategory){ b.style.borderColor = 'var(--accent)'; b.style.background='#fff'; b.style.color='var(--accent)'; }
@@ -298,8 +303,8 @@ document.addEventListener('DOMContentLoaded', ()=> {
   }
 
   function renderMenu(){
-    const q = (menuSearch.value||'').trim().toLowerCase();
-    menuList.innerHTML='';
+    const q = (menuSearch && menuSearch.value || '').trim().toLowerCase();
+    menuList.innerHTML = '';
     const filtered = MENU.filter(it=>{
       if(activeCategory!=='All' && it.cat!==activeCategory) return false;
       if(q && !(it.name.toLowerCase().includes(q) || it.desc.toLowerCase().includes(q))) return false;
@@ -307,8 +312,10 @@ document.addEventListener('DOMContentLoaded', ()=> {
     });
     if(filtered.length===0){ menuList.innerHTML = '<div style="color:var(--muted)">No items found.</div>'; return; }
     filtered.forEach(it=>{
-      const el = document.createElement('div'); el.className='menu-item';
-      el.innerHTML = `<div style="max-width:66%"><strong>${it.name}</strong><div class="meta">${it.desc}</div><div style="font-size:12px;color:var(--muted)">Category: ${it.cat}</div></div>
+      const el = document.createElement('div'); el.className = 'menu-item';
+      el.innerHTML = `<div style="max-width:66%"><strong>${it.name}</strong>
+        <div class="meta">${it.desc}</div>
+        <div style="font-size:12px;color:var(--muted)">Category: ${it.cat}</div></div>
         <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
           <div style="font-weight:700">${formatPrice(it.price)}</div>
           <div style="display:flex;gap:6px">
@@ -316,8 +323,10 @@ document.addEventListener('DOMContentLoaded', ()=> {
             <button class="btn ghost" data-view="${it.id}">View</button>
           </div>
         </div>`;
-      el.querySelector('[data-add]').addEventListener('click', ()=> addToCart(it.id));
-      el.querySelector('[data-view]').addEventListener('click', ()=> openModal(`<h3>${it.name}</h3><p>${it.desc}</p><p style="font-weight:700">${formatPrice(it.price)}</p>`));
+      const addBtn = el.querySelector('[data-add]');
+      const viewBtn = el.querySelector('[data-view]');
+      addBtn && addBtn.addEventListener('click', ()=> addToCart(it.id));
+      viewBtn && viewBtn.addEventListener('click', ()=> openModal(`<h3>${it.name}</h3><p>${it.desc}</p><p style="font-weight:700">${formatPrice(it.price)}</p>`));
       menuList.appendChild(el);
     });
   }
@@ -333,7 +342,8 @@ document.addEventListener('DOMContentLoaded', ()=> {
     if(cart.length===0){ cartItems.innerHTML = '<div style="color:var(--muted)">Cart is empty</div>'; persist(); return; }
     cart.forEach((c,idx)=>{
       const d = document.createElement('div'); d.className='cart-item';
-      d.innerHTML = `<div>${c.name} <small style="color:var(--muted)">x1</small></div><div style="text-align:right">${formatPrice(c.price)}<br/><button class="btn" data-r="${idx}">Remove</button></div>`;
+      d.innerHTML = `<div>${c.name} <small style="color:var(--muted)">x1</small></div>
+        <div style="text-align:right">${formatPrice(c.price)}<br/><button class="btn" data-r="${idx}">Remove</button></div>`;
       d.querySelector('[data-r]').addEventListener('click', ()=> { removeFromCart(idx); });
       cartItems.appendChild(d);
     });
@@ -341,18 +351,23 @@ document.addEventListener('DOMContentLoaded', ()=> {
   }
   function addToCart(id){ const item = MENU.find(m=>m.id===id); if(!item) return; cart.push(item); updateCartUI(); }
   function removeFromCart(i){ cart.splice(i,1); updateCartUI(); }
-  emptyCartBtn.addEventListener('click', ()=> { cart = []; updateCartUI(); });
+  emptyCartBtn && emptyCartBtn.addEventListener('click', ()=> { cart = []; updateCartUI(); });
 
   /* ---------- Modal helpers ---------- */
   function openModal(html){ if(!modalBackdrop || !modalContent) return; modalContent.innerHTML = html || ''; modalBackdrop.style.display = 'flex'; modalBackdrop.setAttribute('aria-hidden','false'); }
   function closeModal(){ if(!modalBackdrop) return; modalBackdrop.style.display = 'none'; modalBackdrop.setAttribute('aria-hidden','true'); }
-  modalBackdrop.addEventListener('click', (e)=> { if(e.target===modalBackdrop) closeModal(); });
+  modalBackdrop && modalBackdrop.addEventListener('click', (e)=> { if(e.target===modalBackdrop) closeModal(); });
 
-  /* ---------- View Cart + Checkout inside cart modal ---------- */
-  viewCartBtn.addEventListener('click', ()=> {
+  /* ---------- View Cart + Checkout flow ---------- */
+  viewCartBtn && viewCartBtn.addEventListener('click', ()=> {
     if(cart.length===0){ alert('Cart is empty'); return; }
-    const list = cart.map((c, i)=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f1f1"><div>${c.name}</div><div>EGP ${c.price} <button data-remove="${i}">remove</button></div></div>`).join('');
-    openModal(`<h3>Your Cart</h3>${list}<div style="margin-top:12px;font-weight:700">Total: EGP ${cart.reduce((s,i)=>s+i.price,0)}</div><div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" id="modalCheckout">Checkout</button><button class="btn" id="closeModal">Close</button></div>`);
+    const list = cart.map((c, i)=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f1f1">
+      <div>${c.name}</div><div>EGP ${c.price} <button data-remove="${i}">remove</button></div></div>`).join('');
+    openModal(`<h3>Your Cart</h3>${list}<div style="margin-top:12px;font-weight:700">Total: EGP ${cart.reduce((s,i)=>s+i.price,0)}</div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn primary" id="modalCheckout">Checkout</button>
+        <button class="btn" id="closeModal">Close</button>
+      </div>`);
     setTimeout(()=> {
       document.querySelectorAll('[data-remove]').forEach(btn=> btn.addEventListener('click', ()=> { removeFromCart(parseInt(btn.getAttribute('data-remove'))); viewCartBtn.click(); }));
       const close = document.getElementById('closeModal'); if(close) close.addEventListener('click', closeModal);
@@ -360,27 +375,25 @@ document.addEventListener('DOMContentLoaded', ()=> {
     },20);
   });
 
-  /* ---------- Checkout modal (collect name/phone/type/address) ---------- */
+  /* ---------- build order lines (dedupe) ---------- */
   function buildOrderLines(){
-    // count duplicates and create lines like "1x Name - EGP 85"
     const counts = {};
     cart.forEach(item => { counts[item.name] = (counts[item.name] || 0) + 1; });
-    const lines = [];
-    // keep original order of unique items from cart
     const seen = new Set();
+    const lines = [];
     cart.forEach(item=>{
       if(seen.has(item.name)) return;
       seen.add(item.name);
-      const qty = counts[item.name];
-      const price = item.price; // price per unit
-      lines.push(`${qty}x ${item.name} - EGP ${price}`);
+      lines.push(`${counts[item.name]}x ${item.name} - EGP ${item.price}`);
     });
     return lines;
   }
 
+  /* ---------- Checkout modal ---------- */
   function openCheckoutModal(){
     if(cart.length===0){ alert('Cart is empty'); return; }
     const total = cart.reduce((s,i)=>s+i.price,0);
+    const linesPreview = buildOrderLines().map(l=>`<div style="font-size:14px">${l}</div>`).join('');
     openModal(`<h3>Checkout</h3>
       <form id="checkoutForm">
         <label>Name*</label><input id="coName" required />
@@ -390,46 +403,57 @@ document.addEventListener('DOMContentLoaded', ()=> {
         <div id="addressWrap" style="display:block;margin-top:8px">
           <label>Address</label><input id="coAddress" placeholder="Street, building, area" />
         </div>
+        <div style="margin-top:12px"><strong>Items:</strong>${linesPreview}</div>
         <div style="margin-top:12px;font-weight:700">Total: EGP ${total}</div>
         <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-          <button type="button" class="btn primary" id="confirmCheckout">Continue to WhatsApp</button>
+          <button type="button" class="btn primary" id="confirmCheckout">Confirm Order</button>
+          <button type="button" class="btn" id="sendWhatsApp">Send to WhatsApp</button>
           <button type="button" class="btn" id="cancelCheckout">Cancel</button>
         </div>
       </form>`);
     setTimeout(()=>{
       const type = document.getElementById('coType');
       const addressWrap = document.getElementById('addressWrap');
-      type && type.addEventListener('change', ()=> {
-        addressWrap.style.display = (type.value === 'Delivery') ? 'block' : 'none';
-      });
+      type && type.addEventListener('change', ()=> { addressWrap.style.display = (type.value === 'Delivery') ? 'block' : 'none'; });
       document.getElementById('cancelCheckout').addEventListener('click', closeModal);
-      document.getElementById('confirmCheckout').addEventListener('click', ()=> {
+
+      // Confirm Order -> show thank you modal
+      document.getElementById('confirmCheckout').addEventListener('click', ()=>{
+        const name = (document.getElementById('coName')||{}).value||'';
+        const phone = (document.getElementById('coPhone')||{}).value||'';
+        if(!name || !phone){ alert('Name and phone are required'); return; }
+        closeModal();
+        openModal(`<h3>Thank you!</h3><p>Your order has been received (demo). We will contact you shortly.</p><div style="margin-top:12px"><button class="btn primary" id="closeThank">OK</button></div>`);
+        setTimeout(()=>{ const c = document.getElementById('closeThank'); if(c) c.addEventListener('click', ()=>{ closeModal(); cart = []; updateCartUI(); }); },20);
+      });
+
+      // Send to WhatsApp -> built message
+      document.getElementById('sendWhatsApp').addEventListener('click', ()=>{
         const name = (document.getElementById('coName')||{}).value||'';
         const phone = (document.getElementById('coPhone')||{}).value||'';
         const typeVal = (document.getElementById('coType')||{}).value||'Pickup';
-        const address = (document.getElementById('coAddress')||{}).value || '';
+        const address = (document.getElementById('coAddress')||{}).value||'';
         if(!name || !phone){ alert('Name and phone are required'); return; }
-        // build message exactly as requested
         const lines = buildOrderLines();
         const total = cart.reduce((s,i)=>s+i.price,0);
-        let message = 'Order from Shawarma El Reem\\n';
-        message += 'Items:\\n' + lines.join('\\n') + '\\n';
-        message += 'Total: EGP ' + total + '\\n';
-        message += 'Name: ' + name + '\\n';
-        message += 'Phone: ' + phone + '\\n';
-        message += 'Type: ' + typeVal + '\\n';
-        if(typeVal === 'Delivery') message += 'Address: ' + address + '\\n';
-        // open WhatsApp
-        const url = 'https://wa.me/' + '201606800000'.replace(/\\D/g,'') + '?text=' + encodeURIComponent(message);
+        let message = 'Order from Shawarma El Reem\n';
+        message += 'Items:\n' + lines.join('\n') + '\n';
+        message += 'Total: EGP ' + total + '\n';
+        message += 'Name: ' + name + '\n';
+        message += 'Phone: ' + phone + '\n';
+        message += 'Type: ' + typeVal + '\n';
+        if(typeVal === 'Delivery') message += 'Address: ' + address + '\n';
+        // open WhatsApp - replace number with actual business number if needed
+        const url = 'https://wa.me/' + '201606800000'.replace(/\D/g,'') + '?text=' + encodeURIComponent(message);
         closeModal();
         window.open(url, '_blank');
       });
     },20);
   }
 
-  // also wire the top-level WhatsApp button to open checkout modal (so user provides address)
-  whatsappBtn.addEventListener('click', openCheckoutModal);
-  whatsappSideBtn.addEventListener('click', openCheckoutModal);
+  // wire checkout actions
+  whatsappBtn && whatsappBtn.addEventListener('click', openCheckoutModal); // top button
+  checkoutSideBtn && checkoutSideBtn.addEventListener('click', openCheckoutModal); // sidebar checkout
 
   /* ---------- Branches ---------- */
   let branchesShown = 3;
@@ -440,9 +464,9 @@ document.addEventListener('DOMContentLoaded', ()=> {
       div.innerHTML = `<strong>${b.title}</strong><div style="color:var(--muted)">${b.addr}</div><div style="margin-top:6px;font-size:13px;color:var(--muted)">Hotline: ${b.phone}</div>`;
       branchesGrid.appendChild(div);
     });
-    showMoreBtn.textContent = branchesShown < BRANCHES.length ? 'Show more' : 'Show less';
+    showMoreBtn && (showMoreBtn.textContent = branchesShown < BRANCHES.length ? 'Show more' : 'Show less');
   }
-  showMoreBtn.addEventListener('click', ()=> { branchesShown = branchesShown < BRANCHES.length ? BRANCHES.length : 3; renderBranches(); });
+  showMoreBtn && showMoreBtn.addEventListener('click', ()=> { branchesShown = branchesShown < BRANCHES.length ? BRANCHES.length : 3; renderBranches(); });
 
   /* ---------- Inquiry form ---------- */
   const enquiryType = document.getElementById('enquiryType');
@@ -451,8 +475,8 @@ document.addEventListener('DOMContentLoaded', ()=> {
   const jobFields = document.getElementById('jobFields');
   function handleEnquiry() {
     if(!enquiryType) return;
-    if(franchiseFields) franchiseFields.style.display = enquiryType.value==='franchise' ? 'block' : 'none';
-    if(jobFields) jobFields.style.display = enquiryType.value==='job' ? 'block' : 'none';
+    franchiseFields && (franchiseFields.style.display = enquiryType.value==='franchise' ? 'block' : 'none');
+    jobFields && (jobFields.style.display = enquiryType.value==='job' ? 'block' : 'none');
   }
   enquiryType && enquiryType.addEventListener('change', handleEnquiry);
   const resetUnified = document.getElementById('resetUnified');
@@ -469,10 +493,6 @@ document.addEventListener('DOMContentLoaded', ()=> {
     setTimeout(()=>{ const c = document.getElementById('confirmInquiry'); if(c) c.addEventListener('click', ()=> { closeModal(); alert('Form would be sent to backend (demo)'); ufForm.reset(); handleEnquiry(); }); const x = document.getElementById('cancelInquiry'); if(x) x.addEventListener('click', closeModal); },50);
   };
 
-  /* ---------- Survey (kept) ---------- */
-  const openSurveyBtn = document.getElementById('orderNow'); // reuse orderNow to open menu; survey omitted here but can be added if needed
-  // If you still want the survey button visible, we can wire it separately.
-
   /* ---------- Hero preview ---------- */
   heroViewport && heroViewport.addEventListener('click', ()=> openModal(`<img src="assets/images/hero-bg.jpg" class="lightbox-img" alt="Hero"/>`));
 
@@ -481,20 +501,19 @@ document.addEventListener('DOMContentLoaded', ()=> {
     const el = document.querySelector(selector);
     if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
   }
-  // nav links
   document.querySelectorAll('.nav-link').forEach(a=>{
     a.addEventListener('click', (e)=>{
       e.preventDefault();
       const target = a.getAttribute('data-target');
       smoothScrollTo(target);
-      // set active
       document.querySelectorAll('.nav-link').forEach(x=>x.classList.remove('active'));
       a.classList.add('active');
       // close mobile nav if open
       const nav = document.querySelector('nav ul'); if(window.innerWidth<=980 && nav) nav.style.display='none';
     });
   });
-  // hero buttons
+
+  // hero quick buttons
   orderNowBtn && orderNowBtn.addEventListener('click', ()=> smoothScrollTo('#menu-section'));
   orderInlineBtn && orderInlineBtn.addEventListener('click', ()=> smoothScrollTo('#menu-section'));
   viewBranchesBtn && viewBranchesBtn.addEventListener('click', ()=> smoothScrollTo('#branches'));
@@ -511,7 +530,9 @@ document.addEventListener('DOMContentLoaded', ()=> {
 
   /* ---------- Initial render ---------- */
   renderCategoryTabs(); renderMenu(); renderBranches(); updateCartUI();
-  // expose checkout modal for cart modal button
+
+  // expose for debugging
+  window._cart = cart;
   window.openCheckoutModal = openCheckoutModal;
 });
 </script>
