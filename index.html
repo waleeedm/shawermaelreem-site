@@ -6,9 +6,12 @@
   <title>Shawarma El Reem — Working Frontend (Final)</title>
   <meta name="description" content="Shawarma El Reem — menu, cart, checkout with address, WhatsApp, branches, responsive." />
   <style>
-    :root{ --accent:#f6b21a; --dark:#111; --muted:#666; --maxw:1200px; }
+    :root{
+      --accent:#f6b21a; --dark:#111; --muted:#666; --maxw:1200px;
+    }
     *{box-sizing:border-box}
     body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;color:var(--dark);background:#fafafa;-webkit-font-smoothing:antialiased}
+    a{color:inherit}
     .container{max-width:var(--maxw);margin:0 auto;padding:18px}
 
     /* Header / nav */
@@ -20,7 +23,7 @@
     nav a{padding:8px 10px;border-radius:6px;color:var(--dark);text-decoration:none;font-weight:600;cursor:pointer}
     nav a:hover, nav a.active{color:var(--accent)}
     .burger{display:none;background:transparent;border:0;font-size:20px;cursor:pointer}
-    .order-cta{background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px 12px;border-radius:10px;font-weight:700;cursor:pointer}
+    .order-cta{background:#fff;border:1px solid var(--accent);color:var(--accent);padding:8px 12px;border-radius:10px;font-weight:700;cursor:pointer}
 
     /* hero */
     .hero{display:flex;gap:20px;align-items:center;padding:28px 0}
@@ -94,10 +97,24 @@
   </style>
 </head>
 <body>
+  <!-- 
+    Place your images into: assets/images/
+    Suggested filenames (must match these to display automatically):
+      - assets/images/logo.jpg
+      - assets/images/banner-hero.jpg
+      - assets/images/banner-about.jpg
+      - assets/images/portfolio-banner.jpg
+      - assets/images/menu1.jpg
+      - assets/images/menu2.jpg
+      - assets/images/menu3.jpg
+      - assets/images/menu4.jpg
+      - assets/images/menu5.jpg
+      - assets/images/menu6.jpg
+  -->
   <header>
     <div class="container nav">
       <div class="brand" style="align-items:center">
-        <img src="assets/images/about-banner.jpg" alt="logo" />
+        <img src="assets/images/logo.jpg" alt="logo" onerror="this.src='assets/images/about-banner.jpg'"/>
         <div>
           <strong>Shawarma El Reem</strong>
           <div style="font-size:12px;color:var(--muted)">Clean Street Food • Since 2007</div>
@@ -136,7 +153,7 @@
           </div>
         </div>
         <div class="hero-media" id="heroViewport" title="Tap to preview">
-          <img src="assets/images/portfolio-banner.jpg" alt="Featured food" />
+          <img src="assets/images/banner-hero.jpg" alt="Featured food" onerror="this.src='assets/images/portfolio-banner.jpg'"/>
         </div>
       </section>
 
@@ -286,13 +303,15 @@
     document.addEventListener('DOMContentLoaded', ()=> {
       /* ---------- Data ---------- */
       const MENU = [
-        {id:1,cat:'Rolls',name:'Classic Chicken Roll',desc:'Shredded chicken, salad, garlic',price:85},
-        {id:2,cat:'Rolls',name:'Classic Beef Roll',desc:'Beef shawarma, pickles',price:95},
-        {id:3,cat:'Plates',name:'Kofta Platter',desc:'Grilled kofta, rice, tahini',price:110},
-        {id:4,cat:'Sides',name:'Fries & Dips',desc:'Seasoned fries with dips',price:45},
-        {id:5,cat:'Family',name:'Family Box (4 Rolls)',desc:'4 rolls + sides',price:320},
-        {id:6,cat:'Drinks',name:'Cold Drink (Can)',desc:'Coke / Sprite',price:20},
-        {id:7,cat:'Rolls',name:'Spicy Roll',desc:'Extra chili',price:90}
+        // Full menu items inserted and grouped by category (edit/add as needed)
+        {id:1,cat:'Rolls',name:'Classic Chicken Roll',desc:'Shredded chicken, salad, garlic',price:85, img:'assets/images/menu1.jpg'},
+        {id:2,cat:'Rolls',name:'Classic Beef Roll',desc:'Beef shawarma, pickles',price:95, img:'assets/images/menu2.jpg'},
+        {id:3,cat:'Rolls',name:'Spicy Roll',desc:'Shawarma with extra chili',price:90, img:'assets/images/menu3.jpg'},
+        {id:4,cat:'Plates',name:'Kofta Platter',desc:'Grilled kofta, rice, tahini',price:110, img:'assets/images/menu4.jpg'},
+        {id:5,cat:'Sides',name:'Fries & Dips',desc:'Seasoned fries with house dips',price:45, img:'assets/images/menu5.jpg'},
+        {id:6,cat:'Family',name:'Family Box (4 Rolls)',desc:'4 rolls + sides',price:320, img:'assets/images/menu1.jpg'},
+        {id:7,cat:'Drinks',name:'Cold Drink (Can)',desc:'Coke / Sprite',price:20, img:'assets/images/menu6.jpg'}
+        // You can add more items here using same structure {id,cat,name,desc,price,img}
       ];
 
       const BRANCHES = [
@@ -338,8 +357,8 @@
       const surveyDelivery = document.getElementById('surveyDelivery');
       const floatingWA = document.getElementById('floatingWA');
 
-      // basic safety
-      if(!menuList || !categoryTabs){ console.error('Essential DOM nodes missing'); /* stop but keep page usable */ }
+      // safety checks
+      if(!menuList || !categoryTabs){ console.error('Essential DOM nodes missing'); /* page still usable — features that rely on missing nodes will fail gracefully */ }
 
       /* ---------- Cart state ---------- */
       let cart = JSON.parse(localStorage.getItem('reem_cart')||'[]');
@@ -361,14 +380,6 @@
         });
       }
 
-      /* ---------- Images by category (mapping) ---------- */
-      // Use the renamed files menu1.jpg, menu2.jpg, menu3.jpg in /assets/images/
-      function getImageByCategory(cat){
-        if(cat==='Rolls') return 'assets/images/menu1.jpg';
-        if(cat==='Plates' || cat==='Sides') return 'assets/images/menu2.jpg';
-        return 'assets/images/menu3.jpg';
-      }
-
       /* ---------- Render Menu (with thumbnails left, clickable to open lightbox) ---------- */
       function renderMenu(){
         if(!menuList) return;
@@ -381,11 +392,11 @@
         });
         if(filtered.length===0){ menuList.innerHTML = '<div style="color:var(--muted)">No items found.</div>'; return; }
         filtered.forEach(it=>{
-          const imgSrc = getImageByCategory(it.cat);
+          const imgSrc = it.img || getImageByCategory(it.cat);
           const el = document.createElement('div'); el.className = 'menu-item';
           el.innerHTML = `
             <div class="menu-left">
-              <div class="menu-img" tabindex="0" role="button" aria-label="View ${it.name} image"><img src="${imgSrc}" alt="${it.name}"></div>
+              <div class="menu-img" tabindex="0" role="button" aria-label="View ${it.name} image"><img src="${imgSrc}" alt="${it.name}" onerror="this.src='assets/images/menu1.jpg'"></div>
               <div style="min-width:0">
                 <strong>${it.name}</strong>
                 <div class="meta">${it.desc}</div>
@@ -411,6 +422,16 @@
         });
       }
       menuSearch && menuSearch.addEventListener('input', renderMenu);
+
+      // fallback image mapping (if item has no img assigned)
+      function getImageByCategory(cat){
+        if(cat==='Rolls') return 'assets/images/menu1.jpg';
+        if(cat==='Plates') return 'assets/images/menu2.jpg';
+        if(cat==='Sides') return 'assets/images/menu3.jpg';
+        if(cat==='Family') return 'assets/images/menu4.jpg';
+        if(cat==='Drinks') return 'assets/images/menu5.jpg';
+        return 'assets/images/menu1.jpg';
+      }
 
       /* ---------- Cart UI ---------- */
       function updateCartUI(){
@@ -440,7 +461,7 @@
       function closeModal(){ if(!modalBackdrop) return; modalBackdrop.style.display = 'none'; modalBackdrop.setAttribute('aria-hidden','true'); }
       modalBackdrop && modalBackdrop.addEventListener('click', (e)=> { if(e.target===modalBackdrop) closeModal(); });
 
-      /* ---------- View Cart + Checkout flow ---------- */
+      /* ---------- View Cart + Checkout flow (cart modal includes Checkout button) ---------- */
       viewCartBtn && viewCartBtn.addEventListener('click', ()=> {
         if(cart.length===0){ alert('Cart is empty'); return; }
         const list = cart.map((c, i)=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f1f1">
@@ -500,7 +521,8 @@
           document.getElementById('cancelCheckout').addEventListener('click', closeModal);
 
           // Confirm Order -> show thank you modal
-          document.getElementById('confirmCheckout').addEventListener('click', ()=>{
+          const confirmEl = document.getElementById('confirmCheckout');
+          if(confirmEl) confirmEl.addEventListener('click', ()=>{
             const name = (document.getElementById('coName')||{}).value||'';
             const phone = (document.getElementById('coPhone')||{}).value||'';
             if(!name || !phone){ alert('Name and phone are required'); return; }
@@ -510,7 +532,8 @@
           });
 
           // Send to WhatsApp -> built message
-          document.getElementById('sendWhatsApp').addEventListener('click', ()=>{
+          const sendWA = document.getElementById('sendWhatsApp');
+          if(sendWA) sendWA.addEventListener('click', ()=>{
             const name = (document.getElementById('coName')||{}).value||'';
             const phone = (document.getElementById('coPhone')||{}).value||'';
             const typeVal = (document.getElementById('coType')||{}).value||'Pickup';
@@ -622,7 +645,7 @@
       setStars(0);
 
       takeSurveyBtn && takeSurveyBtn.addEventListener('click', ()=>{
-        // scroll to bottom so user sees page bottom then popup
+        // scroll to bottom so user sees page bottom then popup appears right side
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         setTimeout(()=> {
           if(surveyPopup){ surveyPopup.style.display = 'block'; surveyPopup.setAttribute('aria-hidden','false'); }
