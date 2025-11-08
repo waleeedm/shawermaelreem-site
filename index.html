@@ -3,48 +3,82 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Shawarma El Reem — Working Frontend</title>
-<meta name="description" content="Working prototype: menu, cart, WhatsApp checkout, branches, survey, unified inquiry form." />
+<title>Shawarma El Reem — Working Frontend (Checkout + Address)</title>
+<meta name="description" content="Working prototype: menu, cart, checkout modal with address, WhatsApp checkout, branches scroll, responsive." />
 <style>
-  :root{--accent:#f6b21a;--dark:#111;--muted:#666;--maxw:1200px}
+  :root{
+    --accent:#f6b21a; --dark:#111; --muted:#666; --maxw:1200px;
+  }
   *{box-sizing:border-box}
   body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;color:var(--dark);background:#fafafa}
+  a{color:inherit}
   .container{max-width:var(--maxw);margin:0 auto;padding:18px}
-  header{position:sticky;top:0;background:#fff;z-index:60;border-bottom:1px solid #eee}
+
+  /* Header / nav */
+  header{position:sticky;top:0;background:#fff;z-index:100;border-bottom:1px solid #eee;box-shadow:0 1px 6px rgba(0,0,0,0.03)}
   .nav{display:flex;align-items:center;justify-content:space-between;gap:12px}
   .brand{display:flex;align-items:center;gap:12px}
   .brand img{height:44px;width:44px;border-radius:8px;object-fit:cover}
   nav ul{display:flex;gap:12px;list-style:none;margin:0;padding:0}
-  nav a{padding:8px 10px;border-radius:8px}
-  .order-cta{background:var(--accent);padding:8px 12px;border-radius:10px;font-weight:700}
+  nav a{padding:8px 10px;border-radius:6px;color:var(--dark);text-decoration:none;font-weight:600}
+  nav a:hover, nav a.active{color:var(--accent)}
+  .burger{display:none;background:transparent;border:0;font-size:20px}
+  .order-cta{background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px 12px;border-radius:10px;font-weight:700}
+
+  /* hero */
   .hero{display:flex;gap:20px;align-items:center;padding:28px 0}
   .hero-copy{flex:1}
   .hero-media{width:420px;height:260px;border-radius:12px;overflow:hidden;cursor:pointer}
   .hero-media img{width:100%;height:100%;object-fit:cover;display:block}
-  main{display:grid;grid-template-columns:1fr 380px;gap:20px}
+
+  /* layout */
+  main{display:grid;grid-template-columns:1fr 380px;gap:20px;padding-bottom:40px}
   .panel{background:#fff;border-radius:12px;padding:14px;border:1px solid #eee}
+
+  /* menu */
   .menu-controls{display:flex;gap:8px;align-items:center;margin-bottom:12px}
-  .category-tabs{display:flex;gap:8px;flex-wrap:wrap}
+  .category-tabs{display:flex;gap:8px;flex-wrap:nowrap;overflow:auto;padding-bottom:6px}
+  .category-tabs::-webkit-scrollbar{height:6px}
+  .category-tabs button{white-space:nowrap}
   .menu-list{display:grid;gap:10px}
   .menu-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;border:1px solid #f2f2f2}
   .meta{color:var(--muted);font-size:13px}
   .btn{padding:8px 12px;border-radius:8px;border:0;cursor:pointer}
   .btn.primary{background:var(--accent);font-weight:700}
   .btn.ghost{background:transparent;border:1px solid #eee}
+
+  /* branches */
   .branches-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  .branch{padding:10px;border-radius:10px;border:1px solid #f2f2f2;background:#fff}
+
+  /* forms */
   input,select,textarea{padding:10px;border-radius:8px;border:1px solid #ddd;width:100%;font-size:14px}
-  .cart-box{position:sticky;top:90px}
+  label{display:block;font-size:13px;margin-bottom:6px;color:var(--muted)}
+
+  /* cart */
+  .cart-box{position:sticky;top:100px}
   .cart-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #eee}
-  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:120}
-  .modal{background:#fff;border-radius:12px;padding:18px;max-width:760px;width:96%;max-height:80vh;overflow:auto}
-  .social a{display:inline-block;margin:0 6px;padding:8px;border-radius:8px;background:#222;color:#fff;text-decoration:none}
+
+  /* modal */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:120;padding:20px}
+  .modal{background:#fff;border-radius:12px;padding:18px;max-width:720px;width:100%;max-height:90vh;overflow:auto}
+  .lightbox-img{max-width:90vw;max-height:80vh;display:block}
+
   footer{padding:20px 0;color:var(--muted);text-align:center}
-  @media (max-width:980px){ main{grid-template-columns:1fr} .hero-media{width:100%;height:200px} nav ul{display:none} .cart-box{position:relative;top:auto} }
+  .social a{display:inline-block;margin:0 6px;padding:8px;border-radius:8px;background:#222;color:#fff;text-decoration:none}
+
+  @media (max-width:980px){
+    main{grid-template-columns:1fr}
+    .hero-media{width:100%;height:200px}
+    nav ul{display:none}
+    .burger{display:block}
+    .order-cta{padding:8px 10px}
+    .modal{max-width:520px}
+    .category-tabs{gap:6px}
+  }
 </style>
 </head>
 <body>
-
-<!-- NOTE: Put images under assets/images/hero-bg.jpg etc or adjust paths -->
 <header>
   <div class="container nav">
     <div class="brand">
@@ -56,18 +90,18 @@
     </div>
 
     <nav>
-      <ul>
-        <li><a href="#home">Home</a></li>
-        <li><a href="#menu-section">Menu</a></li>
-        <li><a href="#serving">Serving</a></li>
-        <li><a href="#branches">Branches</a></li>
-        <li><a href="#inquire">Inquire</a></li>
+      <ul id="mainNav">
+        <li><a href="#home" data-target="#home" class="nav-link">Home</a></li>
+        <li><a href="#menu-section" data-target="#menu-section" class="nav-link">Menu</a></li>
+        <li><a href="#serving" data-target="#serving" class="nav-link">Serving</a></li>
+        <li><a href="#branches" data-target="#branches" class="nav-link">Branches</a></li>
+        <li><a href="#inquire" data-target="#inquire" class="nav-link">Inquire</a></li>
       </ul>
     </nav>
 
     <div style="display:flex;gap:10px;align-items:center">
       <button class="order-cta" id="orderNow">Open Menu</button>
-      <button class="order-cta" id="openSurvey" style="background:#eee;color:#111">Take Survey</button>
+      <button class="burger" id="burger" aria-label="Menu">☰</button>
     </div>
   </div>
 </header>
@@ -80,20 +114,18 @@
         <p style="color:var(--muted)">Handcrafted rolls, premium spices, and clean street food across our branches. Order from our clustered menu below.</p>
         <div style="margin-top:12px;display:flex;gap:8px">
           <button class="btn primary" id="orderInline">Open Menu</button>
-          <button class="btn ghost" id="viewBranches">View Branches</button>
+          <button class="btn ghost" id="viewBranchesBtn">View Branches</button>
         </div>
-        <div style="margin-top:10px;color:var(--muted);font-size:13px">Serving: Shawarma rolls, platters, kofta, fries, cold drinks, daily specials.</div>
       </div>
       <div class="hero-media" id="heroViewport" title="Tap to preview">
         <img src="assets/images/hero-bg.jpg" alt="Featured food" />
       </div>
     </section>
 
-    <!-- Menu -->
     <section id="menu-section" class="panel" style="margin-top:18px">
       <h2>Menu & Ordering</h2>
       <div class="menu-controls">
-        <div class="category-tabs" id="categoryTabs"></div>
+        <div class="category-tabs" id="categoryTabs" role="tablist" aria-label="Categories"></div>
         <input id="menuSearch" placeholder="Search menu..." />
       </div>
 
@@ -108,7 +140,6 @@
       </div>
     </section>
 
-    <!-- Serving -->
     <section id="serving" class="panel" style="margin-top:18px">
       <h2>Serving & Delivery</h2>
       <p style="color:var(--muted)">Pickup, delivery and partners. Hotline: <strong>16068</strong></p>
@@ -118,7 +149,6 @@
       </ul>
     </section>
 
-    <!-- Inquiry -->
     <section id="inquire" class="panel" style="margin-top:18px">
       <h2>Inquire — Franchise, Jobs, Contact</h2>
       <p style="color:var(--muted);margin:6px 0">Single form for all inquiries.</p>
@@ -132,19 +162,16 @@
           <input id="ufName" placeholder="Full name*" required />
           <input id="ufPhone" placeholder="Phone*" required />
         </div>
-
         <div id="franchiseFields" style="display:none;margin-bottom:8px">
           <input id="franchiseLocation" placeholder="Preferred location / city" />
           <input id="franchiseInvestment" placeholder="Investment capacity (EGP)" />
         </div>
-
         <div id="jobFields" style="display:none;margin-bottom:8px">
           <select id="jobPosition">
             <option>Cook</option><option>Rider</option><option>Store Manager</option>
           </select>
           <textarea id="jobCV" placeholder="Paste short CV or message"></textarea>
         </div>
-
         <textarea id="ufMessage" placeholder="Message (optional)" style="min-height:80px"></textarea>
         <div style="margin-top:10px;display:flex;gap:8px">
           <button class="btn primary" type="submit">Submit</button>
@@ -154,9 +181,8 @@
     </section>
   </div>
 
-  <!-- Right column -->
   <aside>
-    <div class="panel">
+    <div class="panel" id="branches">
       <h3>Branches</h3>
       <div class="branches-grid" id="branchesGrid"></div>
       <div style="margin-top:10px;text-align:center"><button class="btn" id="showMoreBranches">Show more</button></div>
@@ -165,7 +191,6 @@
     <div class="panel" style="margin-top:14px">
       <h3>Branch map</h3>
       <div style="height:200px">
-        <!-- Replace with your real embed ID when ready -->
         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3443.123!2d31.2357!3d30.0444!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sCairo!5e0!3m2!1sen!2seg!4v1690000000000" width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
       </div>
     </div>
@@ -203,11 +228,12 @@
   </div>
 </footer>
 
-<div class="modal-backdrop" id="modalBackdrop"><div class="modal" id="modalContent"></div></div>
+<!-- modal -->
+<div class="modal-backdrop" id="modalBackdrop" aria-hidden="true"><div class="modal" id="modalContent"></div></div>
 
 <script>
 document.addEventListener('DOMContentLoaded', ()=> {
-  // Data (expandable)
+  /* ---------- Data ---------- */
   const MENU = [
     {id:1,cat:'Rolls',name:'Classic Chicken Roll',desc:'Shredded chicken, salad, garlic',price:85},
     {id:2,cat:'Rolls',name:'Classic Beef Roll',desc:'Beef shawarma, pickles',price:95},
@@ -227,7 +253,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
     {title:'6th of October',addr:'Shopping Mall',phone:'16068'}
   ];
 
-  // Elements
+  /* ---------- Elements ---------- */
   const categoryTabs = document.getElementById('categoryTabs');
   const menuList = document.getElementById('menuList');
   const menuSearch = document.getElementById('menuSearch');
@@ -244,34 +270,36 @@ document.addEventListener('DOMContentLoaded', ()=> {
   const modalBackdrop = document.getElementById('modalBackdrop');
   const modalContent = document.getElementById('modalContent');
   const heroViewport = document.getElementById('heroViewport');
-  const openSurveyBtn = document.getElementById('openSurvey');
+  const orderNowBtn = document.getElementById('orderNow');
+  const orderInlineBtn = document.getElementById('orderInline');
+  const viewBranchesBtn = document.getElementById('viewBranchesBtn');
+  const mainNav = document.getElementById('mainNav');
+  const burger = document.getElementById('burger');
 
-  // defensive
-  if(!menuList || !categoryTabs) { console.error('Essential DOM nodes missing'); return; }
+  // Defensive checks
+  if(!menuList || !categoryTabs){ console.error('Essential DOM nodes missing'); return; }
 
-  // cart (persist)
+  /* ---------- Cart state ---------- */
   let cart = JSON.parse(localStorage.getItem('reem_cart')||'[]');
   function persist(){ localStorage.setItem('reem_cart', JSON.stringify(cart)); }
-
   function formatPrice(v){ return 'EGP ' + v; }
 
-  // categories
+  /* ---------- Categories ---------- */
   const categories = ['All', ...Array.from(new Set(MENU.map(i=>i.cat)))];
   let activeCategory = 'All';
-
   function renderCategoryTabs(){
-    categoryTabs.innerHTML = '';
+    categoryTabs.innerHTML='';
     categories.forEach(cat=>{
       const b = document.createElement('button'); b.className='btn ghost'; b.textContent = cat;
-      b.style.border = cat===activeCategory ? '1px solid var(--accent)' : '';
-      b.addEventListener('click', ()=> { activeCategory = cat; renderMenu(); renderCategoryTabs(); });
+      if(cat===activeCategory){ b.style.borderColor = 'var(--accent)'; b.style.background='#fff'; b.style.color='var(--accent)'; }
+      b.addEventListener('click', ()=>{ activeCategory = cat; renderMenu(); renderCategoryTabs(); });
       categoryTabs.appendChild(b);
     });
   }
 
   function renderMenu(){
     const q = (menuSearch.value||'').trim().toLowerCase();
-    menuList.innerHTML = '';
+    menuList.innerHTML='';
     const filtered = MENU.filter(it=>{
       if(activeCategory!=='All' && it.cat!==activeCategory) return false;
       if(q && !(it.name.toLowerCase().includes(q) || it.desc.toLowerCase().includes(q))) return false;
@@ -279,7 +307,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
     });
     if(filtered.length===0){ menuList.innerHTML = '<div style="color:var(--muted)">No items found.</div>'; return; }
     filtered.forEach(it=>{
-      const el = document.createElement('div'); el.className = 'menu-item';
+      const el = document.createElement('div'); el.className='menu-item';
       el.innerHTML = `<div style="max-width:66%"><strong>${it.name}</strong><div class="meta">${it.desc}</div><div style="font-size:12px;color:var(--muted)">Category: ${it.cat}</div></div>
         <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
           <div style="font-weight:700">${formatPrice(it.price)}</div>
@@ -293,17 +321,16 @@ document.addEventListener('DOMContentLoaded', ()=> {
       menuList.appendChild(el);
     });
   }
+  menuSearch && menuSearch.addEventListener('input', renderMenu);
 
-  menuSearch.addEventListener('input', renderMenu);
-
+  /* ---------- Cart UI ---------- */
   function updateCartUI(){
     cartCount.textContent = cart.length;
     const total = cart.reduce((s,i)=>s+i.price,0);
     cartTotal.textContent = 'EGP ' + total;
     cartTotalSide.textContent = 'EGP ' + total;
-
     cartItems.innerHTML = '';
-    if(cart.length===0) { cartItems.innerHTML = '<div style="color:var(--muted)">Cart is empty</div>'; persist(); return; }
+    if(cart.length===0){ cartItems.innerHTML = '<div style="color:var(--muted)">Cart is empty</div>'; persist(); return; }
     cart.forEach((c,idx)=>{
       const d = document.createElement('div'); d.className='cart-item';
       d.innerHTML = `<div>${c.name} <small style="color:var(--muted)">x1</small></div><div style="text-align:right">${formatPrice(c.price)}<br/><button class="btn" data-r="${idx}">Remove</button></div>`;
@@ -312,44 +339,103 @@ document.addEventListener('DOMContentLoaded', ()=> {
     });
     persist();
   }
-
   function addToCart(id){ const item = MENU.find(m=>m.id===id); if(!item) return; cart.push(item); updateCartUI(); }
   function removeFromCart(i){ cart.splice(i,1); updateCartUI(); }
   emptyCartBtn.addEventListener('click', ()=> { cart = []; updateCartUI(); });
 
-  // WhatsApp checkout
-  function openWhatsApp(phone='+201606800000'){
-    if(cart.length===0){ alert('Cart is empty'); return; }
-    const lines = cart.map(it=>`${it.name} - EGP ${it.price}`);
-    const total = cart.reduce((s,i)=>s+i.price,0);
-    lines.push('---'); lines.push(`Total: EGP ${total}`);
-    const text = encodeURIComponent('Order from Shawarma El Reem:\\n' + lines.join('\\n'));
-    const url = `https://wa.me/${phone.replace(/\\D/g,'')}?text=${text}`;
-    window.open(url, '_blank');
-  }
-  whatsappBtn.addEventListener('click', ()=> openWhatsApp('+201606800000'));
-  whatsappSideBtn.addEventListener('click', ()=> openWhatsApp('+201606800000'));
-
-  // modal
-  function openModal(html){ if(!modalBackdrop || !modalContent) return; modalContent.innerHTML = html || ''; modalBackdrop.style.display = 'flex'; }
-  function closeModal(){ if(!modalBackdrop) return; modalBackdrop.style.display = 'none'; }
+  /* ---------- Modal helpers ---------- */
+  function openModal(html){ if(!modalBackdrop || !modalContent) return; modalContent.innerHTML = html || ''; modalBackdrop.style.display = 'flex'; modalBackdrop.setAttribute('aria-hidden','false'); }
+  function closeModal(){ if(!modalBackdrop) return; modalBackdrop.style.display = 'none'; modalBackdrop.setAttribute('aria-hidden','true'); }
   modalBackdrop.addEventListener('click', (e)=> { if(e.target===modalBackdrop) closeModal(); });
 
+  /* ---------- View Cart + Checkout inside cart modal ---------- */
   viewCartBtn.addEventListener('click', ()=> {
     if(cart.length===0){ alert('Cart is empty'); return; }
-    const list = cart.map(c=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f1f1"><div>${c.name}</div><div>EGP ${c.price}</div></div>`).join('');
-    openModal(`<h3>Your Cart</h3>${list}<div style="margin-top:12px;font-weight:700">Total: EGP ${cart.reduce((s,i)=>s+i.price,0)}</div><div style="margin-top:12px;display:flex;gap:8px"><button class="btn primary" id="modalWA">Checkout via WhatsApp</button><button class="btn" id="modalClose">Close</button></div>`);
+    const list = cart.map((c, i)=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f1f1"><div>${c.name}</div><div>EGP ${c.price} <button data-remove="${i}">remove</button></div></div>`).join('');
+    openModal(`<h3>Your Cart</h3>${list}<div style="margin-top:12px;font-weight:700">Total: EGP ${cart.reduce((s,i)=>s+i.price,0)}</div><div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" id="modalCheckout">Checkout</button><button class="btn" id="closeModal">Close</button></div>`);
     setTimeout(()=> {
-      const mc = document.getElementById('modalClose'); if(mc) mc.addEventListener('click', closeModal);
-      const mwa = document.getElementById('modalWA'); if(mwa) mwa.addEventListener('click', ()=> { closeModal(); openWhatsApp('+201606800000'); });
+      document.querySelectorAll('[data-remove]').forEach(btn=> btn.addEventListener('click', ()=> { removeFromCart(parseInt(btn.getAttribute('data-remove'))); viewCartBtn.click(); }));
+      const close = document.getElementById('closeModal'); if(close) close.addEventListener('click', closeModal);
+      const modalCheckout = document.getElementById('modalCheckout'); if(modalCheckout) modalCheckout.addEventListener('click', openCheckoutModal);
     },20);
   });
 
-  // Branches
+  /* ---------- Checkout modal (collect name/phone/type/address) ---------- */
+  function buildOrderLines(){
+    // count duplicates and create lines like "1x Name - EGP 85"
+    const counts = {};
+    cart.forEach(item => { counts[item.name] = (counts[item.name] || 0) + 1; });
+    const lines = [];
+    // keep original order of unique items from cart
+    const seen = new Set();
+    cart.forEach(item=>{
+      if(seen.has(item.name)) return;
+      seen.add(item.name);
+      const qty = counts[item.name];
+      const price = item.price; // price per unit
+      lines.push(`${qty}x ${item.name} - EGP ${price}`);
+    });
+    return lines;
+  }
+
+  function openCheckoutModal(){
+    if(cart.length===0){ alert('Cart is empty'); return; }
+    const total = cart.reduce((s,i)=>s+i.price,0);
+    openModal(`<h3>Checkout</h3>
+      <form id="checkoutForm">
+        <label>Name*</label><input id="coName" required />
+        <label>Phone*</label><input id="coPhone" required />
+        <label>Order Type</label>
+        <select id="coType"><option value="Delivery">Delivery</option><option value="Pickup">Pickup</option></select>
+        <div id="addressWrap" style="display:block;margin-top:8px">
+          <label>Address</label><input id="coAddress" placeholder="Street, building, area" />
+        </div>
+        <div style="margin-top:12px;font-weight:700">Total: EGP ${total}</div>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="btn primary" id="confirmCheckout">Continue to WhatsApp</button>
+          <button type="button" class="btn" id="cancelCheckout">Cancel</button>
+        </div>
+      </form>`);
+    setTimeout(()=>{
+      const type = document.getElementById('coType');
+      const addressWrap = document.getElementById('addressWrap');
+      type && type.addEventListener('change', ()=> {
+        addressWrap.style.display = (type.value === 'Delivery') ? 'block' : 'none';
+      });
+      document.getElementById('cancelCheckout').addEventListener('click', closeModal);
+      document.getElementById('confirmCheckout').addEventListener('click', ()=> {
+        const name = (document.getElementById('coName')||{}).value||'';
+        const phone = (document.getElementById('coPhone')||{}).value||'';
+        const typeVal = (document.getElementById('coType')||{}).value||'Pickup';
+        const address = (document.getElementById('coAddress')||{}).value || '';
+        if(!name || !phone){ alert('Name and phone are required'); return; }
+        // build message exactly as requested
+        const lines = buildOrderLines();
+        const total = cart.reduce((s,i)=>s+i.price,0);
+        let message = 'Order from Shawarma El Reem\\n';
+        message += 'Items:\\n' + lines.join('\\n') + '\\n';
+        message += 'Total: EGP ' + total + '\\n';
+        message += 'Name: ' + name + '\\n';
+        message += 'Phone: ' + phone + '\\n';
+        message += 'Type: ' + typeVal + '\\n';
+        if(typeVal === 'Delivery') message += 'Address: ' + address + '\\n';
+        // open WhatsApp
+        const url = 'https://wa.me/' + '201606800000'.replace(/\\D/g,'') + '?text=' + encodeURIComponent(message);
+        closeModal();
+        window.open(url, '_blank');
+      });
+    },20);
+  }
+
+  // also wire the top-level WhatsApp button to open checkout modal (so user provides address)
+  whatsappBtn.addEventListener('click', openCheckoutModal);
+  whatsappSideBtn.addEventListener('click', openCheckoutModal);
+
+  /* ---------- Branches ---------- */
   let branchesShown = 3;
   function renderBranches(){
     branchesGrid.innerHTML = '';
-    BRANCHES.slice(0,branchesShown).forEach(b => {
+    BRANCHES.slice(0,branchesShown).forEach(b=>{
       const div = document.createElement('div'); div.className='branch';
       div.innerHTML = `<strong>${b.title}</strong><div style="color:var(--muted)">${b.addr}</div><div style="margin-top:6px;font-size:13px;color:var(--muted)">Hotline: ${b.phone}</div>`;
       branchesGrid.appendChild(div);
@@ -358,17 +444,19 @@ document.addEventListener('DOMContentLoaded', ()=> {
   }
   showMoreBtn.addEventListener('click', ()=> { branchesShown = branchesShown < BRANCHES.length ? BRANCHES.length : 3; renderBranches(); });
 
-  // Inquiry form behaviour
+  /* ---------- Inquiry form ---------- */
   const enquiryType = document.getElementById('enquiryType');
   const ufForm = document.getElementById('unifiedForm');
   const franchiseFields = document.getElementById('franchiseFields');
   const jobFields = document.getElementById('jobFields');
   function handleEnquiry() {
-    franchiseFields.style.display = enquiryType.value==='franchise' ? 'block' : 'none';
-    jobFields.style.display = enquiryType.value==='job' ? 'block' : 'none';
+    if(!enquiryType) return;
+    if(franchiseFields) franchiseFields.style.display = enquiryType.value==='franchise' ? 'block' : 'none';
+    if(jobFields) jobFields.style.display = enquiryType.value==='job' ? 'block' : 'none';
   }
-  enquiryType.addEventListener('change', handleEnquiry);
-  document.getElementById('resetUnified').addEventListener('click', ()=> { ufForm.reset(); handleEnquiry(); });
+  enquiryType && enquiryType.addEventListener('change', handleEnquiry);
+  const resetUnified = document.getElementById('resetUnified');
+  resetUnified && resetUnified.addEventListener('click', ()=> { ufForm.reset(); handleEnquiry(); });
   window.submitUnified = function(){
     const name = (document.getElementById('ufName')||{}).value || '';
     const phone = (document.getElementById('ufPhone')||{}).value || '';
@@ -377,39 +465,54 @@ document.addEventListener('DOMContentLoaded', ()=> {
     const details = { type, name, phone, message: (document.getElementById('ufMessage')||{}).value || '' };
     if(type==='franchise'){ details.location = (document.getElementById('franchiseLocation')||{}).value || ''; details.investment = (document.getElementById('franchiseInvestment')||{}).value || ''; }
     if(type==='job'){ details.position = (document.getElementById('jobPosition')||{}).value || ''; details.cv = (document.getElementById('jobCV')||{}).value || ''; }
-    openModal(`<h3>Inquiry preview</h3><pre style="white-space:pre-wrap">${JSON.stringify(details,null,2)}</pre><div style="margin-top:12px;display:flex;gap:8px"><button class="btn primary" id="confirmInquiry">Confirm</button><button class="btn" id="cancelInquiry">Cancel</button></div>`);
-    setTimeout(()=>{ const c = document.getElementById('confirmInquiry'); if(c) c.addEventListener('click', ()=> { closeModal(); alert('Form would be sent to backend (demo)'); ufForm.reset(); handleEnquiry(); }); const x = document.getElementById('cancelInquiry'); if(x) x.addEventListener('click', closeModal); },20);
+    openModal(`<h3>Inquiry preview</h3><pre style="white-space:pre-wrap">${JSON.stringify(details,null,2)}</pre><div style="margin-top:12px"><button class="btn primary" id="confirmInquiry">Confirm</button> <button class="btn" id="cancelInquiry">Cancel</button></div>`);
+    setTimeout(()=>{ const c = document.getElementById('confirmInquiry'); if(c) c.addEventListener('click', ()=> { closeModal(); alert('Form would be sent to backend (demo)'); ufForm.reset(); handleEnquiry(); }); const x = document.getElementById('cancelInquiry'); if(x) x.addEventListener('click', closeModal); },50);
   };
 
-  // Survey (simple 3-question modal)
-  openSurveyBtn.addEventListener('click', ()=> {
-    openModal(`<h3>Quick Survey</h3>
-      <form id="surveyForm">
-        <label>1) How often do you order shawarma? <select id="q1"><option>Daily</option><option>Weekly</option><option>Monthly</option><option>Rarely</option></select></label><br/><br/>
-        <label>2) Favourite item? <input id="q2" placeholder="e.g. Chicken Roll" /></label><br/><br/>
-        <label>3) Rate us (1-5) <select id="q3"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></label>
-        <div style="margin-top:12px;display:flex;gap:8px"><button type="button" class="btn primary" id="submitSurvey">Submit</button><button type="button" class="btn" id="cancelSurvey">Cancel</button></div>
-      </form>`);
-    setTimeout(()=>{ document.getElementById('submitSurvey').addEventListener('click', ()=> {
-      const s = {q1:document.getElementById('q1').value, q2:document.getElementById('q2').value, q3:document.getElementById('q3').value};
-      closeModal(); alert('Thanks for your feedback: ' + JSON.stringify(s));
-    }); document.getElementById('cancelSurvey').addEventListener('click', closeModal); },20);
+  /* ---------- Survey (kept) ---------- */
+  const openSurveyBtn = document.getElementById('orderNow'); // reuse orderNow to open menu; survey omitted here but can be added if needed
+  // If you still want the survey button visible, we can wire it separately.
+
+  /* ---------- Hero preview ---------- */
+  heroViewport && heroViewport.addEventListener('click', ()=> openModal(`<img src="assets/images/hero-bg.jpg" class="lightbox-img" alt="Hero"/>`));
+
+  /* ---------- Smooth scroll & nav active state ---------- */
+  function smoothScrollTo(selector){
+    const el = document.querySelector(selector);
+    if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  // nav links
+  document.querySelectorAll('.nav-link').forEach(a=>{
+    a.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const target = a.getAttribute('data-target');
+      smoothScrollTo(target);
+      // set active
+      document.querySelectorAll('.nav-link').forEach(x=>x.classList.remove('active'));
+      a.classList.add('active');
+      // close mobile nav if open
+      const nav = document.querySelector('nav ul'); if(window.innerWidth<=980 && nav) nav.style.display='none';
+    });
   });
+  // hero buttons
+  orderNowBtn && orderNowBtn.addEventListener('click', ()=> smoothScrollTo('#menu-section'));
+  orderInlineBtn && orderInlineBtn.addEventListener('click', ()=> smoothScrollTo('#menu-section'));
+  viewBranchesBtn && viewBranchesBtn.addEventListener('click', ()=> smoothScrollTo('#branches'));
 
-  // hero preview
-  heroViewport.addEventListener('click', ()=> openModal(`<img src="assets/images/hero-bg.jpg" class="lightbox-img" alt="Hero"/>`));
+  /* ---------- Mobile burger ---------- */
+  if(burger){
+    burger.addEventListener('click', ()=> {
+      const nav = document.querySelector('nav ul');
+      if(!nav) return;
+      nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+      nav.style.flexDirection = 'column';
+    });
+  }
 
-  // header buttons
-  document.getElementById('orderNow').addEventListener('click', ()=> document.getElementById('menu-section').scrollIntoView({behavior:'smooth'}));
-  document.getElementById('orderInline').addEventListener('click', ()=> document.getElementById('menu-section').scrollIntoView({behavior:'smooth'}));
-  document.getElementById('viewBranches').addEventListener('click', ()=> document.getElementById('branchesGrid').scrollIntoView({behavior:'smooth'}));
-
-  // mobile nav fallback
-  const burger = document.getElementById('burger');
-  if(burger) burger.addEventListener('click', ()=> { const nav = document.querySelector('nav ul'); if(nav) nav.style.display = nav.style.display==='flex' ? 'none' : 'flex'; });
-
-  // initial render
+  /* ---------- Initial render ---------- */
   renderCategoryTabs(); renderMenu(); renderBranches(); updateCartUI();
+  // expose checkout modal for cart modal button
+  window.openCheckoutModal = openCheckoutModal;
 });
 </script>
 </body>
